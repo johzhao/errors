@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
 	"net/http"
 	"strings"
 	"testing"
@@ -24,14 +22,6 @@ var (
 )
 
 func TestResponseError(t *testing.T) {
-	suite.Run(t, new(TestSuiteResponseError))
-}
-
-type TestSuiteResponseError struct {
-	suite.Suite
-}
-
-func (suite *TestSuiteResponseError) TestResponseError() {
 	args := []struct {
 		name             string
 		data             string
@@ -71,9 +61,17 @@ func (suite *TestSuiteResponseError) TestResponseError() {
 	}
 	for _, arg := range args {
 		httpCode, _, errorCode, errorMessage := handleRequest(arg.data)
-		assert.Equal(suite.T(), arg.expectedHTTPCode, httpCode)
-		assert.Equal(suite.T(), arg.expectedError.Code, errorCode)
-		assert.Equal(suite.T(), arg.expectedError.Message, errorMessage)
+		if arg.expectedHTTPCode != httpCode {
+			t.Fatalf("incorrect http code, expected: '%d', actual: '%d'", arg.expectedHTTPCode, httpCode)
+		}
+
+		if arg.expectedError.Code != errorCode {
+			t.Fatalf("incorrect error code, expected: '%s', actual: '%s'", arg.expectedError.Code, errorCode)
+		}
+
+		if arg.expectedError.Message != errorMessage {
+			t.Fatalf("incorrect error message, expected: '%s', actual: '%s'", arg.expectedError.Message, errorMessage)
+		}
 	}
 }
 
