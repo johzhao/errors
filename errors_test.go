@@ -81,11 +81,13 @@ func handleRequest(data string) (int, interface{}, string, string) {
 	resp, err := controllerCreateUser(data)
 	if err != nil {
 		responseError := ConvertToResponseError(err, ErrorUnknown)
-		httpStatusCode := responseError.HTTPStatusCode
 
+		httpStatusCode := responseError.HTTPStatusCode
 		if httpStatusCode == 0 {
 			httpStatusCode = http.StatusInternalServerError
 		}
+
+		fmt.Printf("request failed: (%v)\n", err)
 
 		return httpStatusCode, nil, responseError.Code, responseError.Message
 	}
