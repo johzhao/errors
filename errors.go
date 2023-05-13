@@ -6,8 +6,9 @@ import (
 )
 
 type BusinessError struct {
-	Code    string
-	Message string
+	HTTPStatusCode int
+	Code           string
+	Message        string
 }
 
 type ResponseError struct {
